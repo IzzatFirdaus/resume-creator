@@ -1,0 +1,193 @@
+/* --- Professional Resume Template --- */
+
+/* Use a modern, clean font stack */
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff; /* White background for the page */
+  font-size: 10pt;
+}
+
+/* Main two-column layout */
+#resume-container {
+  display: flex;
+}
+#main-content {
+  width: 68%;
+  padding-right: 20px;
+}
+#sidebar {
+  width: 32%;
+  padding-left: 20px;
+  background-color: #f2f2f2; /* Light grey sidebar for contrast */
+  padding-top: 25px; /* Align content with header */
+  padding-bottom: 25px;
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  padding: 25px;
+  border-bottom: 2px solid #0056b3; /* Main color accent */
+  margin-bottom: 20px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 26pt;
+  color: #0056b3;
+  font-weight: 700;
+}
+.header .contact-info {
+  margin-top: 8px;
+  font-size: 9pt;
+  color: #555;
+}
+.header .contact-info a {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Section Styling */
+.section {
+  margin-bottom: 20px;
+}
+.section h2 {
+  font-size: 14pt;
+  color: #0056b3;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* Entry Styling (for jobs, education etc.) */
+.entry {
+  margin-bottom: 15px;
+}
+.entry .entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.entry .title {
+  font-size: 11pt;
+  font-weight: bold;
+  color: #333;
+}
+.entry .period,
+.entry .years {
+  font-size: 9pt;
+  color: #666;
+  font-style: italic;
+  flex-shrink: 0; /* Prevent date from wrapping */
+}
+.entry .company,
+.entry .institution {
+  font-size: 10pt;
+  font-weight: bold;
+  color: #555;
+  margin-top: 2px;
+}
+.entry .description {
+  margin-top: 5px;
+  padding-left: 15px;
+  border-left: 2px solid #e0e0e0;
+}
+
+/* Skills List */
+.skills-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.skills-list li {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  font-size: 9pt;
+}
+
+/* References Section */
+.reference .name {
+  font-weight: bold;
+}
+.reference .relation {
+  font-style: italic;
+  color: #555;
+}
+/* Add to resume_template.css */
+.header .tagline {
+  font-size: 11pt;
+  color: #555;
+  text-align: center;
+  margin-top: 5px;
+}
+.header .address {
+  font-size: 9pt;
+  color: #555;
+  text-align: center;
+}
+.contact-info span {
+  margin: 0 5px;
+}
+.entry-subheader {
+  display: flex;
+  justify-content: space-between;
+  font-style: italic;
+  color: #444;
+}
+.entry .cgpa {
+  font-weight: bold;
+  margin-top: 4px;
+}
+/* === NEW Styles for Profile Photo in PDF === */
+.pdf-header-table {
+  width: 100%;
+}
+.pdf-header-photo-cell {
+  width: 15%;
+  text-align: left;
+}
+.pdf-header-info-cell {
+  width: 85%;
+}
+
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%; /* Makes the photo circular */
+  object-fit: cover; /* Prevents image distortion */
+}
+
+/* Adjust original header styles */
+.header h1 {
+  text-align: left;
+}
+.header .tagline {
+  text-align: left;
+}
+.header .contact-info {
+  text-align: left;
+}
+.header .contact-info span {
+  display: block;
+  margin: 0;
+}
+.header .address {
+  text-align: left;
+  margin-top: 5px;
+}
+.header .contact-info a {
+  display: block;
+}
+/* NEW Style for secondary language text in PDF */
+.secondary-lang {
+  font-style: italic;
+  color: #555;
+}
