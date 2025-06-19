@@ -156,7 +156,7 @@ if (isset($_POST['submit'])) {
         $translated_data = $original_data; // Deep copy for translation
 
         // Translate all user-provided text fields
-        $fields_to_translate_top_level = ['tagline', 'summary'];
+        $fields_to_translate_top_level = ['full_name', 'tagline', 'summary'];
         foreach ($fields_to_translate_top_level as $field) {
             $translated_data[$field] = translate($original_data[$field], $source_lang, $target_lang);
         }

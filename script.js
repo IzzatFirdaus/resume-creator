@@ -1,10 +1,12 @@
 // Keep track of the index for each section to ensure unique names
 const counters = {
   experience: 0,
-  internship: 0,
-  projects: 0, // NEW
+  project: 0,
   education: 0,
+  skill: 0, 
+  language: 0,
   reference: 0,
+  email: 1, 
 };
 
 /**
@@ -12,42 +14,60 @@ const counters = {
  * @param {string} section - The name of the section (e.g., 'experience', 'education').
  */
 function addEntry(section) {
-  // Find the template element for the specified section
-  const template = document
-    .getElementById(`${section}-template`)
-    .content.cloneNode(true);
-  const entryDiv = template.querySelector('.entry');
-
-  // Get the current unique index for this section
+  const template = document.getElementById(`${section}-template`).content.cloneNode(true);
+  const container = document.getElementById(`${section}-container`);
   const index = counters[section];
 
-  // Update the name attributes of all form elements within the new entry
-  entryDiv.querySelectorAll('[name]').forEach((input) => {
-    // This regex replaces the empty [] with a unique index like [0], [1], etc.
-    input.name = input.name.replace(/\[\]/, `[${index}]`);
+  // Update name attributes with the correct index for repeatable sections
+  template.querySelectorAll('[name*="[][]"]').forEach((input) => {
+    input.name = input.name.replace('[]', `[${index}]`);
   });
 
-  // Append the newly created and indexed entry to its container
-  document.getElementById(`${section}-container`).appendChild(template);
+  // Specific handling for email to update the label number
+  if (section === 'email') {
+      const newLabel = template.querySelector('label');
+      if (newLabel) {
+          newLabel.textContent = `Email ${index + 1}:`;
+          newLabel.setAttribute('for', `email_${index}`);
+      }
+      const newInput = template.querySelector('input');
+      if (newInput) {
+          newInput.id = `email_${index}`;
+      }
+  }
 
-  // Increment the counter for the next entry in this section
+  container.appendChild(template);
   counters[section]++;
 }
 
 /**
- * Removes the parent '.entry' element of the clicked button.
+ * Removes the parent '.entry' or '.form-group' element of the clicked button.
  * @param {HTMLElement} button - The 'remove' button element that was clicked.
  */
 function removeEntry(button) {
-  // Find the closest ancestor with the class '.entry' and remove it
-  button.closest('.entry').remove();
+  button.closest('.entry, .form-group').remove();
 }
 
 /**
  * This function runs when the page has finished loading.
- * It adds one entry for key sections by default for a better user experience.
  */
 window.onload = () => {
+  // Add one entry for key sections by default
   addEntry('experience');
   addEntry('education');
+  addEntry('skill');
+  addEntry('language');
+
+  // Add event listener for the dual-language checkbox
+  const dualLangCheckbox = document.getElementById('dual_language');
+  if (dualLangCheckbox) {
+    dualLangCheckbox.addEventListener('change', function () {
+      document.querySelectorAll('.dual-lang-field').forEach((field) => {
+        field.style.display = this.checked ? 'block' : 'none';
+      });
+      document.querySelectorAll('.dual-lang-label').forEach((label) => {
+        label.style.display = this.checked ? 'block' : 'none';
+      });
+    });
+  }
 };
