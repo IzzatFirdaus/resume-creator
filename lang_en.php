@@ -9,10 +9,10 @@ $lang = [
     // Index Page
     'form_main_title' => 'Auto Resume Creator',
     'form_main_subtitle' => 'Fill in the details below to generate your professional resume.',
+    'options' => 'Options',
     'template_selection' => 'Resume Template',
     'template_modern' => 'Modern Two-Column',
     'template_classic' => 'Classic Single-Column',
-    'options' => 'Options',
 
     // Field Labels & Legends
     'personal_details' => 'Personal Details',
@@ -71,20 +71,41 @@ $lang = [
     'dual_language_label' => 'Generate Dual-Language Resume',
     'dual_language_helper' => 'Requires you to fill in fields for both languages.',
     
-    'english_section' => 'English Input',
-    'malay_section' => 'Bahasa Melayu Input',
+    'english_section' => 'English',
+    'malay_section' => 'Bahasa Melayu',
 
     // Placeholders
+    'placeholder_full_name' => 'e.g., John Doe',
     'placeholder_tagline' => 'e.g., Results-Oriented Software Engineer',
+    'placeholder_email' => 'e.g., john.doe@example.com',
+    'placeholder_phone' => 'e.g., 123-456-7890',
+    'placeholder_address' => 'e.g., 123 Main St, 50000 Kuala Lumpur',
+    'placeholder_github' => 'e.g., https://github.com/johndoe',
     'placeholder_objective' => 'e.g., Seeking a challenging role in system development...',
+    'placeholder_summary' => 'e.g., A highly motivated software engineer with...',
+    'placeholder_job_title' => 'e.g., Senior Web Developer',
+    'placeholder_company' => 'e.g., Tech Solutions Inc.',
     'placeholder_job_grade' => 'e.g., Grade F29',
+    'placeholder_location' => 'e.g., Kuala Lumpur, Malaysia',
+    'placeholder_years' => 'e.g., 2020 - Present',
+    'placeholder_description' => 'e.g., Led development of key projects...',
+    'placeholder_project_title' => 'e.g., Smart Waste Management System',
+    'placeholder_project_year' => 'e.g., 2023',
+    'placeholder_degree' => 'e.g., B.S. in Computer Science',
+    'placeholder_institution' => 'e.g., University of Technology',
+    'placeholder_cgpa' => 'e.g., 3.75 / 4.00',
+    'placeholder_education_description' => 'e.g., Final Year Project: AI Chatbot...',
+    'placeholder_education_years' => 'e.g., 2020 - 2024',
     'placeholder_school_name' => 'e.g., SMK Putrajaya Presint 8 (1)',
     'placeholder_graduation_year' => 'e.g., 2016',
-    'placeholder_key_achievements' => 'e.g., 8As in SPM (including A+ in English and Modern Mathematics)',
+    'placeholder_key_achievements' => 'e.g., 8As in SPM...',
     'placeholder_language_name' => 'e.g., English',
-    'placeholder_language_proficiency' => 'e.g., Professional Working Proficiency or MUET Band 4',
+    'placeholder_language_proficiency' => 'e.g., Native or MUET Band 4',
     'placeholder_skill_name' => 'e.g., Laravel Framework',
-    
+    'placeholder_ref_name' => 'e.g., Dr. Jane Smith',
+    'placeholder_ref_relation' => 'e.g., Former Manager, Tech Solutions Inc.',
+    'placeholder_ref_contact' => 'e.g., jane.smith@example.com',
+
     // PDF Headers
     'pdf_objective' => 'Career Objective',
     'pdf_work_experience' => 'Work Experience',

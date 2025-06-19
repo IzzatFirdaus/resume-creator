@@ -9,11 +9,11 @@ $lang = [
     // Index Page
     'form_main_title' => 'Penjana Resume Automatik',
     'form_main_subtitle' => 'Isi butiran di bawah untuk menjana resume profesional anda.',
+    'options' => 'Pilihan',
     'template_selection' => 'Templat Resume',
     'template_modern' => 'Dua Lajur Moden',
     'template_classic' => 'Satu Lajur Klasik',
-    'options' => 'Pilihan',
-
+    
     // Field Labels & Legends
     'personal_details' => 'Butiran Peribadi',
     'profile_photo' => 'Gambar Profil',
@@ -71,20 +71,41 @@ $lang = [
     'dual_language_label' => 'Jana Resume Dwi-Bahasa',
     'dual_language_helper' => 'Memerlukan anda mengisi medan untuk kedua-dua bahasa.',
     
-    'english_section' => 'Input Bahasa Inggeris',
-    'malay_section' => 'Input Bahasa Melayu',
+    'english_section' => 'Bahasa Inggeris',
+    'malay_section' => 'Bahasa Melayu',
 
     // Placeholders
+    'placeholder_full_name' => 'cth., Ali bin Abu',
     'placeholder_tagline' => 'cth., Graduan Kejuruteraan Perisian Berorientasikan Hasil',
+    'placeholder_email' => 'cth., ali.abu@example.com',
+    'placeholder_phone' => 'cth., 012-3456789',
+    'placeholder_address' => 'cth., 123 Jalan Utama, 50000 Kuala Lumpur',
+    'placeholder_github' => 'cth., https://github.com/aliabu',
     'placeholder_objective' => 'cth., Mencari peranan yang mencabar dalam pembangunan sistem...',
+    'placeholder_summary' => 'cth., Seorang jurutera perisian yang sangat bermotivasi dengan...',
+    'placeholder_job_title' => 'cth., Pembangun Web Kanan',
+    'placeholder_company' => 'cth., Syarikat Tech Solutions',
     'placeholder_job_grade' => 'cth., Gred F29',
+    'placeholder_location' => 'cth., Kuala Lumpur, Malaysia',
+    'placeholder_years' => 'cth., 2020 - Kini',
+    'placeholder_description' => 'cth., Mengetuai pembangunan projek utama...',
+    'placeholder_project_title' => 'cth., Sistem Pengurusan Sisa Pintar',
+    'placeholder_project_year' => 'cth., 2023',
+    'placeholder_degree' => 'cth., Sarjana Muda Sains Komputer',
+    'placeholder_institution' => 'cth., Universiti Teknologi',
+    'placeholder_cgpa' => 'cth., 3.75 / 4.00',
+    'placeholder_education_description' => 'cth., Projek Tahun Akhir: Membangunkan chatbot AI...',
+    'placeholder_education_years' => 'cth., 2020 - 2024',
     'placeholder_school_name' => 'cth., SMK Putrajaya Presint 8 (1)',
     'placeholder_graduation_year' => 'cth., 2016',
-    'placeholder_key_achievements' => 'cth., 8A dalam SPM (termasuk A+ untuk Bahasa Inggeris dan Matematik Moden)',
-    'placeholder_language_name' => 'cth., Bahasa Melayu',
-    'placeholder_language_proficiency' => 'cth., Cekap atau MUET Band 4',
+    'placeholder_key_achievements' => 'cth., 8A dalam SPM...',
+    'placeholder_language_name' => 'cth., Bahasa Inggeris',
+    'placeholder_language_proficiency' => 'cth., Penutur Asli atau MUET Band 4',
     'placeholder_skill_name' => 'cth., Kerangka Kerja Laravel',
-
+    'placeholder_ref_name' => 'cth., Dr. Ahmad bin Ismail',
+    'placeholder_ref_relation' => 'cth., Bekas Pengurus, Syarikat Tech Solutions',
+    'placeholder_ref_contact' => 'cth., ahmad.ismail@example.com',
+    
     // PDF Headers
     'pdf_objective' => 'Objektif Kerjaya',
     'pdf_work_experience' => 'Pengalaman Kerja',

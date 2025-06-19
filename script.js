@@ -1,12 +1,12 @@
 // Keep track of the index for each section to ensure unique names
 const counters = {
+  email: 1,
   experience: 0,
   project: 0,
   education: 0,
-  skill: 0, 
   language: 0,
+  skill: 0,
   reference: 0,
-  email: 1, 
 };
 
 /**
@@ -18,22 +18,22 @@ function addEntry(section) {
   const container = document.getElementById(`${section}-container`);
   const index = counters[section];
 
-  // Update name attributes with the correct index for repeatable sections
   template.querySelectorAll('[name*="[][]"]').forEach((input) => {
     input.name = input.name.replace('[]', `[${index}]`);
   });
-
-  // Specific handling for email to update the label number
+  
   if (section === 'email') {
       const newLabel = template.querySelector('label');
       if (newLabel) {
           newLabel.textContent = `Email ${index + 1}:`;
-          newLabel.setAttribute('for', `email_${index}`);
       }
-      const newInput = template.querySelector('input');
-      if (newInput) {
-          newInput.id = `email_${index}`;
-      }
+  }
+
+  // If dual language is already checked, make sure new fields are visible
+  if(document.getElementById('dual_language').checked) {
+      template.querySelectorAll('.dual-lang-field').forEach((field) => {
+        field.style.display = 'block';
+      });
   }
 
   container.appendChild(template);
@@ -46,6 +46,28 @@ function addEntry(section) {
  */
 function removeEntry(button) {
   button.closest('.entry, .form-group').remove();
+}
+
+/**
+ * Reads a selected image file and displays it in an <img> tag for preview.
+ */
+function previewPhoto() {
+  const fileInput = document.getElementById('profile_photo');
+  const preview = document.getElementById('photo-preview');
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+
+  reader.onloadend = function () {
+    preview.src = reader.result;
+    preview.classList.add('visible');
+  }
+
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    preview.src = "";
+    preview.classList.remove('visible');
+  }
 }
 
 /**
@@ -64,9 +86,6 @@ window.onload = () => {
     dualLangCheckbox.addEventListener('change', function () {
       document.querySelectorAll('.dual-lang-field').forEach((field) => {
         field.style.display = this.checked ? 'block' : 'none';
-      });
-      document.querySelectorAll('.dual-lang-label').forEach((label) => {
-        label.style.display = this.checked ? 'block' : 'none';
       });
     });
   }

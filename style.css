@@ -4,74 +4,64 @@ body {
   background-color: #f4f4f4;
   color: #333;
   line-height: 1.6;
-  margin: 0; /* Reset default margin */
+  margin: 0;
 }
-
 .container {
   width: 80%;
+  max-width: 960px;
   margin: auto;
   overflow: hidden;
   padding: 20px;
 }
-
-/* Give containers inside the body (but not the header/footer) the white card style */
 body > .container {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
-
 h1 {
   text-align: center;
   color: #333;
 }
-
-/* Form Element Styles */
 form {
   display: flex;
   flex-direction: column;
 }
-
 fieldset {
   border: 1px solid #ddd;
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 5px;
 }
-
 legend {
   padding: 0 10px;
   font-weight: bold;
   color: #0056b3;
 }
-
 .form-group {
   margin-bottom: 15px;
 }
-
 label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
-
 input[type='text'],
 input[type='email'],
 input[type='tel'],
 input[type='url'],
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
 }
-
 textarea {
   resize: vertical;
 }
-
-/* Main Submit Button */
 button[type='submit'] {
   display: block;
   width: 100%;
@@ -82,13 +72,11 @@ button[type='submit'] {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  margin-top: 20px;
 }
-
 button[type='submit']:hover {
   background-color: #004494;
 }
-
-/* === UX Improvement Styles for Dynamic Fields === */
 .section-legend {
   display: flex;
   justify-content: space-between;
@@ -99,7 +87,6 @@ button[type='submit']:hover {
 .section-legend span {
   padding: 0 10px;
 }
-
 .add-btn {
   background-color: #28a745;
   color: white;
@@ -116,7 +103,6 @@ button[type='submit']:hover {
 .add-btn:hover {
   background-color: #218838;
 }
-
 .entry {
   display: flex;
   align-items: flex-start;
@@ -132,7 +118,6 @@ button[type='submit']:hover {
 .entry-controls {
   flex-shrink: 0;
 }
-
 .remove-btn {
   background-color: transparent;
   color: #dc3545;
@@ -149,27 +134,29 @@ button[type='submit']:hover {
 .remove-btn:hover {
   color: #a01c28;
 }
+.dual-lang-label {
+  font-weight: bold;
+  color: #0056b3;
+  margin-top: 10px;
+  display: block;
+}
 
 /* --- Header and Footer Styles --- */
 .main-header {
   background-color: #004494;
   color: #fff;
   padding: 10px 0;
-  margin-bottom: 25px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
 .main-header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .logo {
   font-size: 24px;
   font-weight: bold;
 }
-
 .main-nav a {
   color: #fff;
   text-decoration: none;
@@ -177,11 +164,9 @@ button[type='submit']:hover {
   font-size: 16px;
   transition: color 0.2s;
 }
-
 .main-nav a:hover {
   color: #bdc3c7;
 }
-
 .main-footer {
   text-align: center;
   padding: 20px 0;
@@ -191,13 +176,6 @@ button[type='submit']:hover {
   font-size: 14px;
   color: #666;
 }
-
-/* Class for the 'Preview Design' link container */
-.preview-link-container {
-  text-align: center;
-  margin-bottom: 20px;
-}
-/* Add to bottom of style.css */
 .language-switcher {
   display: inline-block;
   margin-left: 20px;
@@ -207,4 +185,59 @@ button[type='submit']:hover {
 .language-switcher a.active {
   font-weight: bold;
   text-decoration: underline;
+}
+
+/* === Photo Preview Styles === */
+.photo-upload-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+}
+#photo-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  object-fit: cover;
+  display: none;
+}
+#photo-preview.visible {
+  display: block;
+}
+
+/* === Visual Template Selector === */
+.template-selector {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.template-option-label {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 150px;
+}
+.template-option-label img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #eee;
+  margin-bottom: 10px;
+}
+.template-option-label span {
+  font-weight: bold;
+  color: #333;
+}
+.template-option input[type='radio'] {
+  display: none;
+}
+.template-option input[type='radio']:checked + label {
+  border-color: #0056b3;
+  box-shadow: 0 0 10px rgba(0, 86, 179, 0.3);
 }

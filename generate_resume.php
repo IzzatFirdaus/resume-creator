@@ -6,134 +6,168 @@ $lang_en = $lang;
 require_once 'lang_ms.php';
 $lang_ms = $lang;
 
-// Determine the language for the UI messages (if any were needed)
-$current_page_lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
-$lang = ($current_page_lang == 'en') ? $lang_en : $lang_ms;
-
-// --- HELPER FUNCTIONS ---
-
-/**
- * Translates text using a local LibreTranslate API.
- * Returns the original text if translation fails.
- */
-function translate($text, $source, $target) {
-    if (empty(trim($text))) {
-        return '';
-    }
-    $url = 'http://localhost:5000/translate';
-    $data = ['q' => $text, 'source' => $source, 'target' => $target, 'format' => 'text'];
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-    $response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    $responseData = json_decode($response);
-    return ($http_code == 200 && isset($responseData->translatedText)) ? $responseData->translatedText : $text;
-}
-
 /**
  * Reusable function to build the HTML for one language version of the resume.
+ * This is the core engine for creating the visual resume content.
  */
-function buildResumeHtml($data, $lang_file, $photo_path) {
+function buildResumeHtml($data, $lang_file, $photo_path, $template_choice) {
     $photo_html = !empty($photo_path) ? '<img src="' . $photo_path . '" class="profile-photo">' : '';
     
-    $html = '<div class="header">
-            <table class="pdf-header-table"><tr>
-                <td class="pdf-header-photo-cell">' . $photo_html . '</td>
-                <td class="pdf-header-info-cell">
-                    <h1>' . htmlspecialchars($data['full_name']) . '</h1>
-                    <p class="tagline">' . htmlspecialchars($data['tagline']) . '</p>
-                    <div class="contact-info">
-                        <span>' . htmlspecialchars($data['email']) . '</span><span>' . htmlspecialchars($data['phone']) . '</span>
-                        <a href="' . htmlspecialchars($data['github']) . '">' . htmlspecialchars($data['github']) . '</a>
-                        <p class="address">' . nl2br(htmlspecialchars($data['address'])) . '</p>
-                    </div>
-                </td>
-            </tr></table>
-        </div>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-            <tr><td width="68%" style="padding-right: 20px; vertical-align: top;">
-                <div class="section"><h2>' . $lang_file['pdf_summary'] . '</h2><p>' . nl2br(htmlspecialchars($data['summary'])) . '</p></div>';
+    // --- Header Generation ---
+    $html = '<div class="header">';
+    if ($template_choice === 'modern') {
+         $html .= '<table class="pdf-header-table"><tr>
+                    <td class="pdf-header-photo-cell">' . $photo_html . '</td>
+                    <td class="pdf-header-info-cell">
+                        <h1>' . htmlspecialchars($data['full_name']) . '</h1>
+                        <p class="tagline">' . htmlspecialchars($data['tagline']) . '</p>
+                    </td>
+                </tr></table>
+                 <div class="contact-info">
+                    <span>' . implode(' | ', array_map('htmlspecialchars', $data['emails'])) . '</span><br>
+                    <span>' . htmlspecialchars($data['phone']) . '</span> | <a href="' . htmlspecialchars($data['github']) . '">' . htmlspecialchars($data['github']) . '</a>
+                    <p class="address">' . nl2br(htmlspecialchars($data['address'])) . '</p>
+                </div>';
+    } else { // Classic Template
+        $html .= $photo_html ? '<div class="photo-wrapper">' . $photo_html . '</div>' : '';
+        $html .= '<h1>' . htmlspecialchars($data['full_name']) . '</h1>
+                  <p class="tagline">' . htmlspecialchars($data['tagline']) . '</p>
+                  <div class="contact-info">
+                      <span>' . implode(' | ', array_map('htmlspecialchars', $data['emails'])) . '</span> | 
+                      <span>' . htmlspecialchars($data['phone']) . '</span> | 
+                      <a href="' . htmlspecialchars($data['github']) . '">' . htmlspecialchars($data['github']) . '</a>
+                      <p class="address">' . nl2br(htmlspecialchars($data['address'])) . '</p>
+                  </div>';
+    }
+    $html .= '</div>';
 
-    if (!empty($data['experience'][0]['job_title'])) {
-        $html .= '<div class="section"><h2>' . $lang_file['pdf_work_experience'] . '</h2>';
+    // --- Main Content Generation ---
+    $main_content = '';
+    $sidebar_content = '';
+
+    if(!empty($data['objective'])) $main_content .= '<div class="section"><h2>'.$lang_file['pdf_objective'].'</h2><p>'.nl2br(htmlspecialchars($data['objective'])).'</p></div>';
+    if(!empty($data['summary'])) $main_content .= '<div class="section"><h2>'.$lang_file['pdf_summary'].'</h2><p>'.nl2br(htmlspecialchars($data['summary'])).'</p></div>';
+
+    if (!empty($data['experience'])) {
+        $main_content .= '<div class="section"><h2>' . $lang_file['pdf_work_experience'] . '</h2>';
         foreach ($data['experience'] as $job) {
-            if(!empty($job['job_title'])) $html .= '<div class="entry"><div class="entry-header"><span class="title">' . htmlspecialchars($job['job_title']) . '</span><span class="period">' . htmlspecialchars($job['years']) . '</span></div><div class="entry-subheader"><span class="company">' . htmlspecialchars($job['company']) . '</span><span class="location">' . htmlspecialchars($job['location']) . '</span></div><div class="description">' . nl2br(htmlspecialchars($job['description'])) . '</div></div>';
+            if(!empty($job['job_title'])) {
+                 $main_content .= '<div class="entry">
+                            <div class="entry-header">
+                                <span class="title">' . htmlspecialchars($job['job_title']) . '&nbsp;<em>(' . htmlspecialchars($job['type']) . ')</em></span>
+                                <span class="period">' . htmlspecialchars($job['years']) . '</span>
+                            </div>
+                            <div class="entry-subheader">
+                                <span class="company">' . htmlspecialchars($job['company']) . '</span>
+                                <span class="location">' . htmlspecialchars($job['location']) . '</span>
+                            </div>';
+                if(!empty($job['job_grade'])) $main_content .= '<div class="job-grade">' . htmlspecialchars($job['job_grade']) . '</div>';
+                $main_content .= '<div class="description">' . nl2br(htmlspecialchars($job['description'])) . '</div></div>';
+            }
         }
-        $html .= '</div>';
+        $main_content .= '</div>';
     }
-
-    if (!empty($data['internships'][0]['title'])) {
-        $html .= '<div class="section"><h2>' . $lang_file['pdf_internships'] . '</h2>';
-        foreach ($data['internships'] as $intern) {
-             if(!empty($intern['title'])) $html .= '<div class="entry"><div class="entry-header"><span class="title">' . htmlspecialchars($intern['title']) . '</span><span class="period">' . htmlspecialchars($intern['period']) . '</span></div><div class="entry-subheader"><span class="company">' . htmlspecialchars($intern['company']) . '</span><span class="location">' . htmlspecialchars($intern['location']) . '</span></div><div class="description">' . nl2br(htmlspecialchars($intern['description'])) . '</div></div>';
-        }
-        $html .= '</div>';
-    }
-    
-    if (!empty($data['projects'][0]['title'])) {
-        $html .= '<div class="section"><h2>' . $lang_file['pdf_projects'] . '</h2>';
+    if (!empty($data['projects'])) {
+        $main_content .= '<div class="section"><h2>' . $lang_file['pdf_projects'] . '</h2>';
         foreach ($data['projects'] as $project) {
-            if(!empty($project['title'])) $html .= '<div class="entry"><div class="entry-header"><span class="title">' . htmlspecialchars($project['title']) . '</span><span class="period">' . htmlspecialchars($project['year']) . '</span></div><div class="description" style="margin-top: 5px;">' . nl2br(htmlspecialchars($project['description'])) . '</div></div>';
+            if(!empty($project['title'])) $main_content .= '<div class="entry"><div class="entry-header"><span class="title">' . htmlspecialchars($project['title']) . '</span><span class="period">' . htmlspecialchars($project['year']) . '</span></div><div class="description" style="margin-top: 5px;">' . nl2br(htmlspecialchars($project['description'])) . '</div></div>';
         }
-        $html .= '</div>';
+        $main_content .= '</div>';
     }
-
-    $html .= '</td><td width="32%" style="padding-left: 20px; padding-top: 25px; vertical-align: top; background-color: #f2f2f2;">';
     
-    if (!empty($data['education'][0]['degree'])) {
-        $html .= '<div class="section"><h2>' . $lang_file['pdf_education'] . '</h2>';
+    // Sidebar Content
+    if (!empty($data['education'])) {
+        $sidebar_content .= '<div class="section"><h2>' . $lang_file['pdf_education'] . '</h2>';
         foreach ($data['education'] as $edu) {
-            if(!empty($edu['degree'])) $html .= '<div class="entry"><div class="entry-header"><span class="title">' . htmlspecialchars($edu['degree']) . '</span><span class="years">' . htmlspecialchars($edu['years']) . '</span></div><div class="entry-subheader"><span class="institution">' . htmlspecialchars($edu['institution']) . '</span><span class="location">' . htmlspecialchars($edu['location']) . '</span></div><div class="cgpa">' . $lang_file['cgpa'] . ': ' . htmlspecialchars($edu['cgpa']) . '</div><div class="description">' . nl2br(htmlspecialchars($edu['description'])) . '</div></div>';
+            if(!empty($edu['degree'])) $sidebar_content .= '<div class="entry"><div class="entry-header"><span class="title">' . htmlspecialchars($edu['degree']) . '</span><span class="years">' . htmlspecialchars($edu['years']) . '</span></div><div class="entry-subheader"><span class="institution">' . htmlspecialchars($edu['institution']) . '</span><span class="location">' . htmlspecialchars($edu['location']) . '</span></div><div class="cgpa">' . $lang_file['cgpa'] . ': ' . htmlspecialchars($edu['cgpa']) . '</div><div class="description">' . nl2br(htmlspecialchars($edu['description'])) . '</div></div>';
         }
-        $html .= '</div>';
+        $sidebar_content .= '</div>';
+    }
+    if (!empty($data['secondary_education']['school_name'])) {
+        $sec = $data['secondary_education'];
+        $sidebar_content .= '<div class="section"><h2>' . $lang_file['pdf_secondary_education'] . '</h2>';
+        $sidebar_content .= '<div class="entry"><div class="entry-header"><span class="title">' . htmlspecialchars($sec['school_name']) . '</span><span class="period">' . htmlspecialchars($sec['year']) . '</span></div><div class="description">' . nl2br(htmlspecialchars($sec['achievements'])) . '</div></div>';
+        $sidebar_content .= '</div>';
+    }
+     if (!empty($data['languages'])) {
+        $sidebar_content .= '<div class="section"><h2>' . $lang_file['pdf_languages'] . '</h2><ul class="languages-list">';
+        foreach ($data['languages'] as $lang_item) {
+             if(!empty($lang_item['name'])) $sidebar_content .= '<li class="lang-entry"><span class="lang-name">' . htmlspecialchars($lang_item['name']) . ':</span> ' . htmlspecialchars($lang_item['proficiency']) . '</li>';
+        }
+        $sidebar_content .= '</ul></div>';
+    }
+    if (!empty($data['skills'])) {
+        $sidebar_content .= '<div class="section"><h2>' . $lang_file['pdf_skills'] . '</h2><ul class="skills-list">';
+        foreach ($data['skills'] as $skill) {
+             if(!empty($skill['name'])) $sidebar_content .= '<li class="skill-entry"><span class="skill-name">' . htmlspecialchars($skill['name']) . '</span> <span class="skill-level">(' . htmlspecialchars($skill['level']) . ')</span></li>';
+        }
+        $sidebar_content .= '</ul></div>';
+    }
+    if (!empty($data['references'])) {
+        $sidebar_content .= '<div class="section"><h2>' . $lang_file['pdf_references'] . '</h2>';
+        foreach ($data['references'] as $ref) {
+            if(!empty($ref['name'])) $sidebar_content .= '<div class="entry reference"><div class="name">' . htmlspecialchars($ref['name']) . '</div><div class="relation">' . htmlspecialchars($ref['relation']) . '</div><div>' . htmlspecialchars($ref['contact']) . '</div></div>';
+        }
+        $sidebar_content .= '</div>';
     }
     
-    if (!empty($data['skills_str'])) {
-        $html .= '<div class="section"><h2>' . $lang_file['skills'] . '</h2><ul class="skills-list">';
-        foreach ($data['skills'] as $skill) { $html .= '<li>' . htmlspecialchars($skill) . '</li>'; }
-        $html .= '</ul></div>';
+    // Assemble final layout based on template
+    if ($template_choice === 'modern') {
+        $html .= '<div class="content-wrapper"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                    <td class="main-content-cell">' . $main_content . '</td>
+                    <td class="sidebar-cell">' . $sidebar_content . '</td>
+                  </tr></table></div>';
+    } else { // Classic Template
+        $html .= '<div class="content-wrapper">' . $main_content . $sidebar_content . '</div>';
     }
-
-    if (!empty($data['references'][0]['name'])) {
-        $html .= '<div class="section"><h2>' . $lang_file['references'] . '</h2>';
-        foreach ($data['references'] as $ref) {
-            if(!empty($ref['name'])) $html .= '<div class="entry reference"><div class="name">' . htmlspecialchars($ref['name']) . '</div><div class="relation">' . htmlspecialchars($ref['relation']) . '</div><div>' . htmlspecialchars($ref['contact']) . '</div></div>';
-        }
-        $html .= '</div>';
-    }
-
-    $html .= '</td></tr></table>';
+    
     return $html;
 }
 
 // --- MAIN SCRIPT LOGIC ---
-
 if (isset($_POST['submit'])) {
 
-    $auto_translate_enabled = isset($_POST['auto_translate']) && $_POST['auto_translate'] == '1';
+    $dual_language_enabled = isset($_POST['dual_language']) && $_POST['dual_language'] == '1';
+    $template_choice = $_POST['template_choice'] ?? 'modern';
+    $data_en = [];
+    $data_ms = [];
     
-    // Gather original data and sanitize it
-    $original_data = [
-        'full_name' => $_POST['full_name'] ?? '',
-        'tagline' => $_POST['tagline'] ?? '',
-        'email' => filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL),
-        'phone' => $_POST['phone'] ?? '',
-        'address' => $_POST['address'] ?? '',
-        'github' => filter_input(INPUT_POST, 'github', FILTER_SANITIZE_URL),
-        'summary' => $_POST['summary'] ?? '',
-        'experience' => $_POST['experience'] ?? [],
-        'internships' => $_POST['internships'] ?? [],
-        'projects' => $_POST['projects'] ?? [],
-        'education' => $_POST['education'] ?? [],
-        'skills_str' => $_POST['skills'] ?? '',
-        'skills' => array_map('trim', explode(',', $_POST['skills'] ?? '')),
-        'references' => $_POST['references'] ?? [],
-    ];
+    // --- Data Structuring for EN and MS ---
+    $shared_data_keys = ['emails', 'phone', 'address', 'github', 'languages', 'skills', 'references'];
+    foreach ($shared_data_keys as $key) {
+        $data_en[$key] = $data_ms[$key] = $_POST[$key] ?? [];
+    }
+
+    $translatable_keys = ['full_name', 'tagline', 'objective', 'summary'];
+    foreach($translatable_keys as $key){
+        $data_en[$key] = $_POST[$key.'_en'] ?? '';
+        $data_ms[$key] = $_POST[$key.'_ms'] ?? '';
+    }
     
+    $dynamic_sections = ['experience', 'projects', 'education'];
+    foreach ($dynamic_sections as $section) {
+        if(isset($_POST[$section])) {
+            foreach ($_POST[$section] as $index => $entry) {
+                foreach($entry as $key => $value) {
+                    if (substr($key, -3) === '_en') {
+                        $data_en[$section][$index][substr($key, 0, -3)] = $value;
+                    } elseif (substr($key, -3) === '_ms') {
+                        $data_ms[$section][$index][substr($key, 0, -3)] = $value;
+                    } else {
+                        $data_en[$section][$index][$key] = $value;
+                        $data_ms[$section][$index][$key] = $value;
+                    }
+                }
+            }
+        }
+    }
+    $data_en['secondary_education']['school_name'] = $_POST['secondary_education']['school_name_en'] ?? '';
+    $data_ms['secondary_education']['school_name'] = $_POST['secondary_education']['school_name_ms'] ?? '';
+    $data_en['secondary_education']['year'] = $data_ms['secondary_education']['year'] = $_POST['secondary_education']['year'] ?? '';
+    $data_en['secondary_education']['achievements'] = $_POST['secondary_education']['achievements_en'] ?? '';
+    $data_ms['secondary_education']['achievements'] = $_POST['secondary_education']['achievements_ms'] ?? '';
+
+    // --- File Upload ---
     $photo_path = '';
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
         $upload_dir = 'uploads/';
@@ -146,74 +180,40 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    $css = file_get_contents('resume_template.css');
+    // --- HTML & PDF Generation ---
+    $template_css_path = 'resume_template_' . $template_choice . '.css';
+    if (!file_exists($template_css_path)) $template_css_path = 'resume_template_modern.css';
+    $css = file_get_contents($template_css_path);
+    
     $final_html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Resume</title><style>' . $css . '</style></head><body>';
 
-    if ($auto_translate_enabled) {
-        $source_lang = $_POST['source_language'] ?? 'en';
-        $target_lang = ($source_lang == 'en') ? 'ms' : 'en';
-
-        $translated_data = $original_data; // Deep copy for translation
-
-        // Translate all user-provided text fields
-        $fields_to_translate_top_level = ['full_name', 'tagline', 'summary'];
-        foreach ($fields_to_translate_top_level as $field) {
-            $translated_data[$field] = translate($original_data[$field], $source_lang, $target_lang);
-        }
-
-        $dynamic_sections = [
-            'experience' => ['job_title', 'company', 'location', 'description'],
-            'internships' => ['title', 'company', 'location', 'description'],
-            'projects' => ['title', 'description'],
-            'education' => ['degree', 'institution', 'location', 'description'],
-            'references' => ['name', 'relation']
-        ];
-
-        foreach($dynamic_sections as $section => $translatable_fields) {
-            if(!empty($translated_data[$section])) {
-                foreach($translated_data[$section] as $key => $entry) {
-                    foreach($translatable_fields as $field_name) {
-                        if(isset($entry[$field_name])) {
-                             $translated_data[$section][$key][$field_name] = translate($entry[$field_name], $source_lang, $target_lang);
-                        }
-                    }
-                }
-            }
-        }
-
-        $first_data = ($source_lang == 'en') ? $original_data : $translated_data;
-        $second_data = ($source_lang == 'en') ? $translated_data : $original_data;
-        $first_lang_file = ($source_lang == 'en') ? $lang_en : $lang_ms;
-        $second_lang_file = ($source_lang == 'en') ? $lang_ms : $lang_en;
-        
-        $final_html .= buildResumeHtml($first_data, $first_lang_file, $photo_path);
+    if ($dual_language_enabled) {
+        $final_html .= buildResumeHtml($data_en, $lang_en, $photo_path, $template_choice);
         $final_html .= '<div style="page-break-before: always;"></div>';
-        $final_html .= buildResumeHtml($second_data, $second_lang_file, $photo_path);
-
+        $final_html .= buildResumeHtml($data_ms, $lang_ms, $photo_path, $template_choice);
     } else {
-        $final_html .= buildResumeHtml($original_data, $lang, $photo_path);
+        $ui_lang_data = $_SESSION['lang'] === 'ms' ? $data_ms : $data_en;
+        $ui_lang_file = $_SESSION['lang'] === 'ms' ? $lang_ms : $lang_en;
+        $final_html .= buildResumeHtml($ui_lang_data, $ui_lang_file, $photo_path, $template_choice);
     }
     
     $final_html .= '</body></html>';
 
-    // GENERATE THE PDF
+    // TCPDF Generation
     require_once('tcpdf/tcpdf.php');
     $pdf = new TCPDF('P', 'pt', 'A4', true, 'UTF-8', false);
     $pdf->SetCreator('Auto Resume Creator');
-    $pdf->SetAuthor($original_data['full_name']);
-    $pdf->SetTitle('Resume - ' . $original_data['full_name']);
+    $pdf->SetAuthor($data_en['full_name']);
+    $pdf->SetTitle('Resume - ' . $data_en['full_name']);
     $pdf->setPrintHeader(false);
     $pdf->setPrintFooter(false);
     $pdf->SetMargins(25, 25, 25, true);
     $pdf->SetAutoPageBreak(TRUE, 25);
     $pdf->AddPage();
     $pdf->writeHTML($final_html, true, false, true, false, '');
-    $pdf->Output('Resume_' . str_replace(' ', '_', $original_data['full_name']) . '.pdf', 'I');
+    $pdf->Output('Resume_' . str_replace(' ', '_', $data_en['full_name']) . '.pdf', 'I');
 
     if (!empty($photo_path)) unlink($photo_path);
-
-} else {
-    header('Location: index.php');
     exit();
 }
 ?>

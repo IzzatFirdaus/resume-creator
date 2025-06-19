@@ -1,0 +1,174 @@
+/* --- Professional Resume Template (Modern Two-Column) --- */
+/* NEW: Constrains the width of the test page to simulate a real document */
+.resume-body {
+  max-width: 816px; /* A4 paper width in pixels at 96 DPI */
+  margin: 30px auto; /* Adds space above/below and centers it horizontally */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+  padding: 40px; /* Simulates document margins */
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  font-size: 10pt;
+}
+
+/* === Header Styles === */
+.header {
+  padding-bottom: 15px;
+  border-bottom: 2px solid #0056b3;
+  margin-bottom: 20px;
+}
+.pdf-header-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.pdf-header-photo-cell {
+  width: 15%;
+  text-align: left;
+  vertical-align: top;
+}
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.pdf-header-info-cell {
+  width: 85%;
+  vertical-align: top;
+  padding-left: 15px;
+}
+.header h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 26pt;
+  color: #0056b3;
+  font-weight: 700;
+  text-align: left;
+}
+.header .tagline {
+  font-size: 11pt;
+  color: #555;
+  text-align: left;
+  margin-top: 5px;
+  font-style: italic;
+}
+.header .contact-info {
+  margin-top: 8px;
+  font-size: 9pt;
+  color: #555;
+  text-align: left;
+}
+.header .contact-info span,
+.header .contact-info a {
+  margin-right: 12px;
+}
+.header .contact-info a {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: bold;
+}
+.header .address {
+  font-size: 9pt;
+  color: #555;
+  text-align: left;
+  margin-top: 5px;
+}
+
+/* === Main Layout === */
+/*.content-wrapper {
+    /* This class is used in the PHP but the layout is handled by the table */
+/*}*/
+
+/* === Section & Entry Styling === */
+.section {
+  margin-bottom: 20px;
+  page-break-inside: avoid;
+}
+.section h2 {
+  font-size: 14pt;
+  color: #0056b3;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.entry {
+  margin-bottom: 15px;
+  page-break-inside: avoid;
+}
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.entry .title {
+  font-size: 11pt;
+  font-weight: bold;
+  color: #333;
+}
+.entry .period,
+.entry .years {
+  font-size: 9pt;
+  color: #666;
+  font-style: italic;
+  flex-shrink: 0;
+}
+.entry-subheader {
+  display: flex;
+  justify-content: space-between;
+  font-style: italic;
+  color: #555;
+  margin-top: 2px;
+}
+.entry .job-grade,
+.entry .cgpa {
+  font-weight: bold;
+  margin-top: 4px;
+  font-size: 10pt;
+}
+.description {
+  margin-top: 5px;
+  padding-left: 15px;
+  border-left: 2px solid #e0e0e0;
+  text-align: justify;
+}
+.description ul {
+  padding-left: 20px;
+  margin-top: 5px;
+}
+.secondary-lang {
+  font-style: italic;
+  color: #555;
+}
+
+/* === Sidebar-specific Lists === */
+.languages-list,
+.skills-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.lang-entry,
+.skill-entry {
+  margin-bottom: 8px;
+}
+.lang-name,
+.skill-name {
+  font-weight: bold;
+}
+.skill-level {
+  font-style: italic;
+  color: #555;
+}
+.reference .name {
+  font-weight: bold;
+}
+.reference .relation {
+  font-style: italic;
+  color: #555;
+}
